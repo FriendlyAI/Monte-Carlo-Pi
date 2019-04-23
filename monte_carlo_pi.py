@@ -1,11 +1,12 @@
-from tkinter import Tk, Canvas, Label, IntVar, Entry, Button
 from math import pi, sqrt
 from random import randint
+from tkinter import Tk, Canvas, Label, Entry, Button, Checkbutton, IntVar
 
 
 class Main(Tk):
     def __init__(self):
         super(Main, self).__init__()
+
         self.title('Monte Carlo Algorithm: Pi')
 
         self.width = 600
@@ -24,24 +25,28 @@ class Main(Tk):
         self.number_of_iterations_box = Entry(self)
         self.number_of_iterations_box.insert(0, '1000')
 
-        # Init points inside circle
-        self.number_inside_circle = 0
-
         # Start button
         self.start_button = Button(self, text='Start', command=self.start)
 
+        # Animate
+        self.animate_var = IntVar()
+        self.animate = Checkbutton(self, text='Animate', var=self.animate_var)
+
+        # Init points inside circle
+        self.number_inside_circle = 0
+
+        # Init total points
+        self.total_points = 0
+
         # Label for pi value
-        # self.calculated_pi_value = IntVar()
-        # self.calculated_pi_value.set(0)
-        self.pi_label = Label(self, text='N/A')
+        self.pi_label = Label(self)
 
         # Label for number of points
-        # self.points_value = IntVar()
-        # self.points_value.set(0)
-        self.points_label = Label(self, text='N/A')
+        self.points_label = Label(self)
 
         # Label for accuracy of calculation
-        self.accuracy_label = Label(self, text='N/A')
+        self.error = '0%'
+        self.error_label = Label(self)
 
         # Pack UI
         self.init_ui()
@@ -49,33 +54,51 @@ class Main(Tk):
     def init_ui(self):
         self.number_of_iterations_box.pack()
         self.start_button.pack()
+        self.animate.pack()
         self.canvas.pack()
         self.pi_label.pack()
         self.points_label.pack()
-        self.accuracy_label.pack()
+        self.error_label.pack()
 
-        self.reset_canvas()
+        self.reset()
 
-    def reset_canvas(self):
+    def reset(self):
         self.canvas.delete('all')
         self.canvas.create_rectangle(0, 0, 500, 500, fill='light gray', outline='')
         self.canvas.create_oval(0, 0, 500, 500, fill='hot pink', outline='')
 
-    def start(self):
-        for _ in range(int(self.number_of_iterations_box.get())):
-            self.draw_point()
+        self.pi_label.configure(text='Approximate Pi:\n0')
+        self.number_inside_circle = 0
+        self.total_points = 0
+        self.points_label.configure(text='Points:\n0/0')
+        self.error_label.configure(text='Error:\n0%')
 
-    def draw_point(self):
+    def start(self):
+        self.reset()
+        for i in range(int(self.number_of_iterations_box.get())):
+            self.draw_point(i)
+        self.update_ui()
+
+    def draw_point(self, i):
         x = randint(1, 499)
         y = randint(1, 499)
-        self.canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='blue', outline='blue')
+        self.canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='blue', outline='')
         self.in_circle(x, y)
+        if i % 3 == 0 and self.animate_var.get():
+            self.update_ui()
 
     def in_circle(self, x, y):
         distance = sqrt((self.canvas_side / 2 - x) ** 2 + (self.canvas_side / 2 - y) ** 2)
         if distance <= self.canvas_side / 2:
-            pass
+            self.number_inside_circle += 1
+        self.total_points += 1
 
+    def update_ui(self):
+        calculated_pi = self.number_inside_circle / self.total_points * 4
+        self.pi_label.configure(text=f'Approximate Pi:\n{calculated_pi:.4f}')
+        self.points_label.configure(text=f'Points:\n{self.number_inside_circle}/{self.total_points}')
+        self.error_label.configure(text=f'Error:\n{(abs(calculated_pi - pi) / pi * 100):.3f}%')
+        self.canvas.update()
 
 
 if __name__ == '__main__':
