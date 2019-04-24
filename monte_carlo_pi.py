@@ -64,8 +64,8 @@ class Main(Tk):
 
     def reset(self):
         self.canvas.delete('all')
-        self.canvas.create_rectangle(0, 0, 500, 500, fill='light gray', outline='')
-        self.canvas.create_oval(0, 0, 500, 500, fill='hot pink', outline='')
+        self.canvas.create_rectangle(0, 0, 500, 500, fill='gray90', outline='')
+        self.canvas.create_oval(0, 0, 500, 500, fill='orchid1', outline='')
 
         self.pi_label.configure(text='Approximate Pi:\n0')
         self.number_inside_circle = 0
@@ -74,9 +74,11 @@ class Main(Tk):
         self.error_label.configure(text='Error:\n0%')
 
     def start(self):
+        self.start_button.configure(state='disable')
         self.reset()
         for i in range(int(self.number_of_iterations_box.get())):
             self.draw_point(i)
+        self.start_button.configure(state='normal')
         self.update_ui()
 
     def draw_point(self, i):
