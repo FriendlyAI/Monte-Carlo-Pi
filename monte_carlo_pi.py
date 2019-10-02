@@ -1,5 +1,5 @@
 from math import pi, sqrt
-from random import randint
+from random import uniform
 from tkinter import Tk, Canvas, Label, Entry, Button, Checkbutton, IntVar
 
 
@@ -82,9 +82,9 @@ class Main(Tk):
         self.update_ui()
 
     def draw_point(self, i):
-        x = randint(1, 499)
-        y = randint(1, 499)
-        self.canvas.create_oval(x - 1, y - 1, x + 1, y + 1, fill='blue', outline='')
+        x = uniform(.5, 499.5)
+        y = uniform(.5, 499.5)
+        self.canvas.create_oval(x - .5, y - .5, x + .5, y + .5, fill='blue', outline='')
         self.in_circle(x, y)
         if i % 3 == 0 and self.animate_var.get():
             self.update_ui()
