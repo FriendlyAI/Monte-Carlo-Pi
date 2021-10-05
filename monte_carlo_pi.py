@@ -31,6 +31,8 @@ class Main(Tk):
         # Animate
         self.animate_var = IntVar()
         self.animate = Checkbutton(self, text='Animate', var=self.animate_var)
+        
+        self.animation_step = 3  # updates every x circles drawn
 
         # Init points inside circle
         self.number_inside_circle = 0
@@ -86,7 +88,7 @@ class Main(Tk):
         y = uniform(.5, 499.5)
         self.canvas.create_oval(x - .5, y - .5, x + .5, y + .5, fill='blue', outline='')
         self.in_circle(x, y)
-        if i % 3 == 0 and self.animate_var.get():
+        if i % self.animation_step == 0 and self.animate_var.get():
             self.update_ui()
 
     def in_circle(self, x, y):
